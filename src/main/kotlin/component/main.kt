@@ -1,7 +1,6 @@
 package component
 
 import base.ReactComponent
-import kotlinx.browser.document
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.html.InputType
@@ -40,9 +39,6 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
     }
 
     override fun componentDidMount() {
-        val url = (document.getElementById("lifehacker_url") as? HTMLInputElement)?.value
-        console.log("URL: $url")
-
         componentScope.launch {
             val lifehacksDeferred = async { lifehackRepository.getAll() }
             val categoriesDeferred = async { categoryRepository.getAll() }

@@ -11,9 +11,7 @@ import org.w3c.fetch.RequestInit
 import util.decodeJson
 import util.encodeJson
 
-class LifehackRepository {
-    private val url: String = "http://localhost:8080/api/lifehacks"
-
+class LifehackRepository : Repository("/api/lifehacks") {
     suspend fun getAll(
         query: String? = null,
         categoryId: Long? = null

@@ -1,7 +1,16 @@
 package repository
 
+import kotlinx.browser.document
+import org.w3c.dom.HTMLInputElement
+
 abstract class Repository(baseEndpoint: String) {
+    protected val url: String
+
     init {
-        js("process.env.REACT_APP_LIFEHACKER_URL")
+        val urlInput = document.getElementById("lifehacker_url") as? HTMLInputElement
+        val url = urlInput?.value
+        requireNotNull(url) { "LifeHacker backend URL is not provided" }
+
+        this.url = "$url$baseEndpoint"
     }
 }
