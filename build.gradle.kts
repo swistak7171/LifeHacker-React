@@ -32,6 +32,8 @@ dependencies {
 
 kotlin {
     js(LEGACY) {
+        useCommonJs()
+        nodejs()
         browser {
             binaries.executable()
             webpackTask {
@@ -46,13 +48,28 @@ kotlin {
                     webpackConfig.cssSupport.enabled = true
                 }
             }
+            compilations.all {
+                kotlinOptions {
+                    metaInfo = true
+                    sourceMap = true
+                    sourceMapEmbedSources = "always"
+                    moduleKind = "commonjs"
+                    main = "call"
+                    freeCompilerArgs = listOf("-Xinline-classes")
+                }
+
+                packageJson {
+                    customField("scripts", mapOf(
+                        "start" to "node kotlin/LifeHacker-React.js"
+                    ))
+                }
+            }
         }
     }
 }
 
 tasks.getByName("build") {
     val url = System.getenv("LIFEHACKER_URL")
-    println("URL: $url")
     if (url.isNullOrBlank()) {
         return@getByName
     }
