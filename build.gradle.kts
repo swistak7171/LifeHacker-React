@@ -51,19 +51,24 @@ kotlin {
 }
 
 tasks.getByName("build") {
-    val hasUrl = project.hasProperty("url")
-    if (!hasUrl) {
+    val url = System.getenv("LIFEHACKER_URL")
+    println("URL: $url")
+    if (url.isNullOrBlank()) {
         return@getByName
     }
 
-    val url = project.property("url")
-    file("build\\distributions\\.config").run {
-        createNewFile()
-        writeText(url.toString())
-    }
+    val os = System.getenv("OS")
+    val isWindows = os.contains("windows", true)
+    val slash = if (isWindows) "\\" else "/"
+    val outputPath = "build${slash}distributions"
+
+//    file("build\\distributions\\.config").run {
+//        createNewFile()
+//        writeText(url.toString())
+//    }
 
     doLast {
-        val indexFile = file("build\\distributions\\index.html")
+        val indexFile = file("${outputPath}${slash}index.html")
         val htmlContent = indexFile.readText()
         val parts = htmlContent.split("<script")
         if (parts.size != 2) {
