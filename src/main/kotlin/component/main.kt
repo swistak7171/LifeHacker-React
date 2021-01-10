@@ -1,6 +1,13 @@
 package component
 
 import base.ReactComponent
+import com.ccfraser.muirwik.components.MTypographyVariant
+import com.ccfraser.muirwik.components.card.mCard
+import com.ccfraser.muirwik.components.card.mCardContent
+import com.ccfraser.muirwik.components.list.mList
+import com.ccfraser.muirwik.components.mTypography
+import com.ccfraser.muirwik.components.targetValue
+import com.ccfraser.muirwik.components.variant
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.html.InputType
@@ -10,7 +17,6 @@ import kotlinx.html.js.onClickFunction
 import model.Category
 import model.Lifehack
 import org.w3c.dom.HTMLElement
-import org.w3c.dom.HTMLInputElement
 import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RProps
@@ -61,7 +67,7 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
                     onChangeFunction = { event ->
                         componentScope.launch {
                             setState {
-                                query = (event.target as HTMLInputElement).value
+                                query = (event.targetValue as? String) ?: ""
                             }
                         }
                     }
@@ -103,9 +109,20 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
                 +"Lifehacks"
             }
 
-            state.lifehacks.forEach { lifehack ->
-                p {
-                    +lifehack.content
+            mList {
+                state.lifehacks.forEach { lifehack ->
+                    mCard {
+                        mCardContent {
+                            mTypography {
+                                +lifehack.content
+
+                                attrs {
+                                    variant = MTypographyVariant.body1
+                                }
+                            }
+
+                        }
+                    }
                 }
             }
         }

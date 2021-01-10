@@ -1,21 +1,28 @@
 package component
 
 import base.ReactComponent
+import com.ccfraser.muirwik.components.button.mButton
+import com.ccfraser.muirwik.components.form.mFormControl
+import com.ccfraser.muirwik.components.form.mFormLabel
+import com.ccfraser.muirwik.components.input.mOutlinedInput
+import com.ccfraser.muirwik.components.mSelect
+import com.ccfraser.muirwik.components.menu.mMenuItem
+import com.ccfraser.muirwik.components.targetValue
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
 import kotlinx.html.ButtonType
-import kotlinx.html.InputType
-import kotlinx.html.js.onChangeFunction
+import kotlinx.html.classes
+import kotlinx.html.id
 import kotlinx.html.js.onSubmitFunction
 import model.Category
 import model.LifehackRequestBody
-import org.w3c.dom.HTMLInputElement
-import org.w3c.dom.HTMLSelectElement
 import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RProps
 import react.RState
-import react.dom.*
+import react.dom.button
+import react.dom.div
+import react.dom.form
 import react.router.dom.redirect
 import react.setState
 import repository.CategoryRepository
@@ -56,25 +63,26 @@ class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) 
                 to = "/",
                 push = true
             )
+
             return
         }
 
         form {
             attrs {
+                id = "add_form"
                 onSubmitFunction = ::onSubmit
             }
 
             div {
-                span {
-                    +"Content"
-                }
-
-                input {
-                    attrs {
-                        type = InputType.text
-                        onChangeFunction = { event ->
-                            setState {
-                                content = (event.target as HTMLInputElement).value
+                mFormControl {
+                    mFormLabel("Content")
+                    mOutlinedInput {
+                        attrs {
+                            onChange = { event ->
+                                setState {
+                                    console.log("Content: ${event.targetValue}")
+                                    content = (event.targetValue as? String) ?: ""
+                                }
                             }
                         }
                     }
@@ -82,26 +90,25 @@ class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) 
             }
 
             div {
-                span {
-                    +"Category"
-                }
-
-                select {
-                    label { +"Category" }
-                    attrs {
-                        onChangeFunction = { event ->
-                            setState {
-                                categoryId = (event.target as HTMLSelectElement).value.toLongOrNull()
+                mFormControl {
+                    mFormLabel("Category")
+                    mSelect(null) {
+                        attrs {
+                            onChange = { event, element ->
+                                setState {
+                                    console.log("Category: ${event.targetValue}")
+                                    categoryId = (event.targetValue as? String)?.toLongOrNull()
+                                }
                             }
                         }
-                    }
 
-                    state.categories.forEach { category ->
-                        option {
-                            +category.name
+                        state.categories.forEach { category ->
+                            mMenuItem {
+                                +category.name
 
-                            attrs {
-                                value = category.id.toString()
+                                attrs {
+                                    value = category.id.toString()
+                                }
                             }
                         }
                     }
@@ -109,11 +116,19 @@ class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) 
             }
 
             div {
-                button {
-                    +"Add"
-
-                    attrs {
-                        type = ButtonType.submit
+                mFormControl {
+                    button {
+                        +"Add"
+                        attrs {
+                            classes = setOf("MuiButtonBase-root MuiButton-root MuiButton-contained")
+                            type = ButtonType.submit
+                        }
+                    }
+                    
+                    mButton("") {
+                        attrs {
+                            hidden = true
+                        }
                     }
                 }
             }
@@ -126,6 +141,7 @@ class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) 
             content = state.content,
             categoryId = state.categoryId ?: return
         )
+        console.log(requestBody.toString())
 
         componentScope.launch {
             val added = lifehackRepository.add(requestBody)

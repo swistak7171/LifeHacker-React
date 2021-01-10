@@ -1,10 +1,12 @@
+
+import com.ccfraser.muirwik.components.MTypographyVariant
+import com.ccfraser.muirwik.components.mTypography
+import com.ccfraser.muirwik.components.variant
 import component.AddComponent
 import component.MainComponent
 import kotlinx.browser.document
 import kotlinx.browser.window
-import kotlinx.html.js.onClickFunction
 import react.RProps
-import react.dom.h1
 import react.dom.nav
 import react.dom.render
 import react.router.dom.hashRouter
@@ -19,10 +21,11 @@ fun main() {
             hashRouter {
                 nav {
                     navLink<RProps>(to = "/") {
-                        h1 {
+                        mTypography {
                             +"LifeHacker"
                             attrs {
-                                onClickFunction = { event ->
+                                variant = MTypographyVariant.h5
+                                onClick = { event ->
                                     val isMainPage = window.location.href.endsWith("#/")
                                     if (isMainPage) {
                                         window.location.reload()
