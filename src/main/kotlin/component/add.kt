@@ -10,6 +10,8 @@ import com.ccfraser.muirwik.components.menu.mMenuItem
 import com.ccfraser.muirwik.components.targetValue
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
+import kotlinx.css.LinearDimension
+import kotlinx.css.marginTop
 import kotlinx.html.ButtonType
 import kotlinx.html.classes
 import kotlinx.html.id
@@ -22,11 +24,13 @@ import react.RProps
 import react.RState
 import react.dom.button
 import react.dom.div
-import react.dom.form
 import react.router.dom.redirect
 import react.setState
 import repository.CategoryRepository
 import repository.LifehackRepository
+import styled.css
+import styled.styledDiv
+import styled.styledForm
 
 external interface AddProps : RProps
 
@@ -67,7 +71,11 @@ class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) 
             return
         }
 
-        form {
+        styledForm {
+            css {
+                marginTop = LinearDimension("16px")
+            }
+
             attrs {
                 id = "add_form"
                 onSubmitFunction = ::onSubmit
@@ -89,7 +97,11 @@ class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) 
                 }
             }
 
-            div {
+            styledDiv {
+                css {
+                    marginTop = LinearDimension("16px")
+                }
+
                 mFormControl {
                     mFormLabel("Category")
                     mSelect(null) {
@@ -115,7 +127,11 @@ class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) 
                 }
             }
 
-            div {
+            styledDiv {
+                css {
+                    marginTop = LinearDimension("16px")
+                }
+
                 mFormControl {
                     button {
                         +"Add"
@@ -124,8 +140,12 @@ class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) 
                             type = ButtonType.submit
                         }
                     }
-                    
+
                     mButton("") {
+                        css {
+                            marginTop = LinearDimension("16px")
+                        }
+
                         attrs {
                             hidden = true
                         }
@@ -141,7 +161,6 @@ class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) 
             content = state.content,
             categoryId = state.categoryId ?: return
         )
-        console.log(requestBody.toString())
 
         componentScope.launch {
             val added = lifehackRepository.add(requestBody)

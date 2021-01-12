@@ -10,8 +10,8 @@ version = "0.0.1"
 repositories {
     jcenter()
     mavenCentral()
-    maven { url = uri("https://dl.bintray.com/kotlin/kotlin-js-wrappers") }
-    maven { url = uri("https://kotlin.bintray.com/kotlinx/") }
+    maven("https://dl.bintray.com/kotlin/kotlin-js-wrappers")
+    maven("https://kotlin.bintray.com/kotlinx/")
 }
 
 dependencies {

@@ -33,7 +33,8 @@ class LifehackRepository : Repository("/api/lifehacks") {
 
             window.fetch(customUrl).await()
                 .text().await()
-                .let { decodeJson(it) }
+                .let { decodeJson<List<Lifehack>>(it) }
+                .sortedByDescending(Lifehack::id)
         }
     }
 

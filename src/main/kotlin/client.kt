@@ -21,10 +21,9 @@ fun main() {
             hashRouter {
                 nav {
                     navLink<RProps>(to = "/") {
-                        mTypography {
-                            +"LifeHacker"
+                        mTypography("LifeHacker") {
                             attrs {
-                                variant = MTypographyVariant.h5
+                                variant = MTypographyVariant.h4
                                 onClick = { event ->
                                     val isMainPage = window.location.href.endsWith("#/")
                                     if (isMainPage) {

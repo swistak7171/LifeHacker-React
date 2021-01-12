@@ -3,7 +3,7 @@ package style
 import kotlinx.css.*
 import styled.StyleSheet
 
-object WelcomeStyles : StyleSheet("style.WelcomeStyles", isStatic = true) {
+object MainStyles : StyleSheet("MainStyles", isStatic = true) {
     val textContainer by css {
         padding(5.px)
 
@@ -14,6 +14,15 @@ object WelcomeStyles : StyleSheet("style.WelcomeStyles", isStatic = true) {
     val textInput by css {
         margin(vertical = 5.px)
 
-        fontSize = 14.px
+        fontSize = 32.px
+    }
+
+    val mainListDiv by css {
+        float = Float.left
+        width = LinearDimension("30%")
+    }
+
+    val sideListDiv by css {
+        float = Float.left
     }
 } 
