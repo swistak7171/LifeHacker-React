@@ -34,6 +34,7 @@ import styled.styledDiv
 external interface MainProps : RProps
 
 data class MainState(
+    var isLoading: Boolean = false,
     var query: String? = null,
     var categories: List<Category> = listOf(),
     var lifehacks: List<Lifehack> = listOf(),
@@ -54,6 +55,8 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
 
     override fun componentDidMount() {
         componentScope.launch {
+            setState { isLoading = true }
+
             val lifehacksDeferred = async { lifehackRepository.getAll() }
             val categoriesDeferred = async { categoryRepository.getAll() }
             val adviceDeferred = async { adviceRepository.getRandom() }
@@ -65,6 +68,7 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
             val quote = quoteDeferred.await()
 
             setState {
+                this.isLoading = false
                 this.lifehacks = lifehacks
                 this.categories = categories
                 this.advice = advice
@@ -75,6 +79,12 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
 
     override fun RBuilder.render() {
         div {
+            if (state.isLoading) {
+                mCircularProgress {
+                    css { +MainStyles.centeredElement }
+                }
+            }
+
             styledDiv {
                 mTypography("Lifehacks") {
                     attrs {

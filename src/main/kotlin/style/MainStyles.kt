@@ -25,4 +25,12 @@ object MainStyles : StyleSheet("MainStyles", isStatic = true) {
     val sideListDiv by css {
         float = Float.left
     }
+
+    val centeredElement by css {
+        position = Position.absolute
+        left = LinearDimension("50%")
+        right = LinearDimension("50%")
+        top = LinearDimension("50%")
+        bottom = LinearDimension("50%")
+    }
 } 
