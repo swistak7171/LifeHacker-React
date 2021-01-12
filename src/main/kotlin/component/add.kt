@@ -84,16 +84,16 @@ class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) 
             div {
                 mFormControl {
                     mFormLabel("Content")
-                    mOutlinedInput {
-                        attrs {
-                            onChange = { event ->
-                                setState {
-                                    console.log("Content: ${event.targetValue}")
-                                    content = (event.targetValue as? String) ?: ""
-                                }
+                    mOutlinedInput(
+                        multiline = true,
+                        rows = 5,
+                        onChange = { event ->
+                            setState {
+                                console.log("Content: ${event.targetValue}")
+                                content = (event.targetValue as? String) ?: ""
                             }
                         }
-                    }
+                    )
                 }
             }
 
