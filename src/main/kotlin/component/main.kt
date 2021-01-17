@@ -259,7 +259,7 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
                         }
 
                         mTypography(
-                            text = advice.content,
+                            text = "\"${advice.content}\"",
                             variant = MTypographyVariant.body1
                         ) {
                             css {
@@ -297,7 +297,7 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
                         }
 
                         mTypography(
-                            text = quote.content,
+                            text = "\"${quote.content}\"",
                             variant = MTypographyVariant.body1
                         ) {
                             css {
