@@ -12,7 +12,6 @@ repositories {
     mavenCentral()
     maven("https://dl.bintray.com/kotlin/kotlin-js-wrappers")
     maven("https://kotlin.bintray.com/kotlinx/")
-    maven("https://dl.bintray.com/robert-cronin/fortytwoapps")
 }
 
 dependencies {
@@ -104,14 +103,3 @@ tasks.getByName("build") {
         indexFile.writeText(newHtmlContent)
     }
 }
-
-//tasks.withType<org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile> {
-//    doLast {
-//        val content = outputFile.readText()
-//        outputFile.writer().buffered().use {
-//            it.write("if (typeof(HTMLLegendElement) == 'undefined') HTMLLegendElement = {};\n")
-//            it.write("if (typeof(window) == 'undefined') window = {};\n")
-//            it.write(content)
-//        }
-//    }
-//}
