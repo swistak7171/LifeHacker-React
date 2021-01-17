@@ -98,7 +98,21 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
                 mTypography(
                     text = "Lifehacks",
                     variant = MTypographyVariant.h6
-                )
+                ) {
+                    css {
+                        display = Display.inline
+                    }
+                }
+
+                mButton(
+                    caption = "Refresh",
+                    onClick = ::onRefreshLifehacksButtonClick
+                ) {
+                    css {
+                        marginLeft = LinearDimension("16px")
+                        display = Display.inline
+                    }
+                }
 
                 css {
                     +MainStyles.mainListDiv
@@ -170,17 +184,16 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
                 }
 
                 div {
-                    mOutlinedInput {
-                        attrs {
-                            onChange = { event ->
-                                componentScope.launch {
-                                    setState {
-                                        query = (event.targetValue as? String) ?: ""
-                                    }
+                    mOutlinedInput(
+                        placeholder = "Search phrase",
+                        onChange = { event ->
+                            componentScope.launch {
+                                setState {
+                                    query = (event.targetValue as? String) ?: ""
                                 }
                             }
                         }
-                    }
+                    )
 
                     mButton(
                         caption = "Search",
@@ -221,6 +234,7 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
                 state.advice?.let { advice ->
                     styledDiv {
                         css {
+                            marginTop = LinearDimension("16px")
                             width = LinearDimension(SIDE_DIV_WIDTH)
                         }
 
@@ -230,6 +244,17 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
                         ) {
                             css {
                                 marginTop = LinearDimension("32px")
+                                display = Display.inline
+                            }
+                        }
+
+                        mButton(
+                            caption = "Refresh",
+                            onClick = ::onRefreshAdviceButtonClick
+                        ) {
+                            css {
+                                marginLeft = LinearDimension("16px")
+                                display = Display.inline
                             }
                         }
 
@@ -247,6 +272,7 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
                 state.quote?.let { quote ->
                     styledDiv {
                         css {
+                            marginTop = LinearDimension("16px")
                             width = LinearDimension(SIDE_DIV_WIDTH)
                         }
 
@@ -256,6 +282,17 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
                         ) {
                             css {
                                 marginTop = LinearDimension("32px")
+                                display = Display.inline
+                            }
+                        }
+
+                        mButton(
+                            caption = "Refresh",
+                            onClick = ::onRefreshQuoteButtonClick
+                        ) {
+                            css {
+                                marginLeft = LinearDimension("16px")
+                                display = Display.inline
                             }
                         }
 
@@ -331,6 +368,33 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
             val lifehacks = lifehackRepository.getAll(categoryId = categoryId)
             setState {
                 this.lifehacks = lifehacks
+            }
+        }
+    }
+
+    private fun onRefreshLifehacksButtonClick(event: Event) {
+        componentScope.launch {
+            val lifehacks = lifehackRepository.getAll()
+            setState {
+                this.lifehacks = lifehacks
+            }
+        }
+    }
+
+    private fun onRefreshAdviceButtonClick(event: Event) {
+        componentScope.launch {
+            val advice = adviceRepository.getRandom()
+            setState {
+                this.advice = advice
+            }
+        }
+    }
+
+    private fun onRefreshQuoteButtonClick(event: Event) {
+        componentScope.launch {
+            val quote = quoteRepository.getRandom()
+            setState {
+                this.quote = quote
             }
         }
     }

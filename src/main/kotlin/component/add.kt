@@ -3,6 +3,7 @@ package component
 import base.ReactComponent
 import com.ccfraser.muirwik.components.MTypographyVariant
 import com.ccfraser.muirwik.components.button.mButton
+import com.ccfraser.muirwik.components.form.MFormControlVariant
 import com.ccfraser.muirwik.components.form.mFormControl
 import com.ccfraser.muirwik.components.form.mFormLabel
 import com.ccfraser.muirwik.components.input.mOutlinedInput
@@ -107,6 +108,7 @@ class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) 
 
                         mFormLabel("Content")
                         mOutlinedInput(
+                            placeholder = "Content",
                             multiline = true,
                             rows = 5,
                             onChange = { event ->
@@ -114,7 +116,11 @@ class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) 
                                     content = (event.targetValue as? String) ?: ""
                                 }
                             }
-                        )
+                        ) {
+                            css {
+                                marginTop = LinearDimension("4px")
+                            }
+                        }
                     }
                 }
 
@@ -126,18 +132,18 @@ class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) 
 
                     mFormControl {
                         mFormLabel("Category")
-                        mSelect(null) {
-                            css {
-                                width = LinearDimension(FORM_WIDTH)
-                            }
-
-                            attrs {
-                                onChange = { event, element ->
-                                    setState {
-                                        console.log("Category: ${event.targetValue}")
-                                        categoryId = (event.targetValue as? String)?.toLongOrNull()
-                                    }
+                        mSelect(
+                            value = null,
+                            variant = MFormControlVariant.outlined,
+                            onChange = { event, element ->
+                                setState {
+                                    categoryId = (event.targetValue as? String)?.toLongOrNull()
                                 }
+                            }
+                        ) {
+                            css {
+                                marginTop = LinearDimension("4px")
+                                width = LinearDimension(FORM_WIDTH)
                             }
 
                             state.categories.forEach { category ->
