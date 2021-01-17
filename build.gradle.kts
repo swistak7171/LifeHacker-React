@@ -12,6 +12,7 @@ repositories {
     mavenCentral()
     maven("https://dl.bintray.com/kotlin/kotlin-js-wrappers")
     maven("https://kotlin.bintray.com/kotlinx/")
+    maven("https://dl.bintray.com/robert-cronin/fortytwoapps")
 }
 
 dependencies {
@@ -26,10 +27,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.1.1")
     implementation("org.jetbrains.kotlinx:kotlinx-io:0.1.16")
 
-    implementation(npm("react-star-rating-component", "1.4.1"))
     implementation(npm("@material-ui/core", "4.11.2"))
     implementation(npm("@material-ui/lab", "4.0.0-alpha.57"))
-//    implementation(npm("@material-ui/icons", "4.11.2"))
 }
 
 kotlin {
@@ -105,3 +104,14 @@ tasks.getByName("build") {
         indexFile.writeText(newHtmlContent)
     }
 }
+
+//tasks.withType<org.jetbrains.kotlin.gradle.tasks.Kotlin2JsCompile> {
+//    doLast {
+//        val content = outputFile.readText()
+//        outputFile.writer().buffered().use {
+//            it.write("if (typeof(HTMLLegendElement) == 'undefined') HTMLLegendElement = {};\n")
+//            it.write("if (typeof(window) == 'undefined') window = {};\n")
+//            it.write(content)
+//        }
+//    }
+//}

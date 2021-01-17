@@ -9,6 +9,7 @@ import com.ccfraser.muirwik.components.card.mCard
 import com.ccfraser.muirwik.components.card.mCardContent
 import com.ccfraser.muirwik.components.input.mOutlinedInput
 import com.ccfraser.muirwik.components.list.mList
+import kotlinx.browser.window
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.css.*
@@ -41,6 +42,8 @@ data class MainState(
     var advice: Advice? = null,
     var quote: Quote? = null,
 ) : RState
+
+private const val SIDE_DIV_WIDTH: String = "250px"
 
 @JsExport
 class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(props) {
@@ -78,19 +81,24 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
     }
 
     override fun RBuilder.render() {
-        div {
+        styledDiv {
+            css {
+                marginTop = LinearDimension("16px")
+            }
+
             if (state.isLoading) {
                 mCircularProgress {
                     css { +MainStyles.centeredElement }
                 }
+
+                return@styledDiv
             }
 
             styledDiv {
-                mTypography("Lifehacks") {
-                    attrs {
-                        variant = MTypographyVariant.h6
-                    }
-                }
+                mTypography(
+                    text = "Lifehacks",
+                    variant = MTypographyVariant.h6
+                )
 
                 css {
                     +MainStyles.mainListDiv
@@ -107,16 +115,46 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
 
                             mCardContent {
                                 if (category != null) {
-                                    mTypography(category.name) {
-                                        attrs {
-                                            variant = MTypographyVariant.caption
-                                        }
-                                    }
+                                    mTypography(
+                                        text = category.name,
+                                        variant = MTypographyVariant.caption
+                                    )
                                 }
 
-                                mTypography(lifehack.content) {
-                                    attrs {
-                                        variant = MTypographyVariant.body1
+                                mTypography(
+                                    text = lifehack.content,
+                                    variant = MTypographyVariant.body1
+                                )
+
+                                div {
+                                    val rating = lifehack.rating.toString().run {
+                                        val dotIndex = indexOf('.')
+                                        if (dotIndex == -1) {
+                                            this
+                                        } else {
+                                            substring(0, dotIndex + 2)
+                                        }
+                                    }
+
+                                    mTypography(
+                                        text = "Rating: $rating / 5",
+                                        variant = MTypographyVariant.body2
+                                    ) {
+                                        css {
+                                            display = Display.inline
+                                        }
+                                    }
+
+                                    mButton(
+                                        caption = "Rate",
+                                        onClick = {
+                                            onRateButtonClick(lifehack.id)
+                                        }
+                                    ) {
+                                        css {
+                                            marginLeft = LinearDimension("16px")
+                                            display = Display.inline
+                                        }
                                     }
                                 }
                             }
@@ -181,48 +219,60 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
                 }
 
                 state.advice?.let { advice ->
-                    mTypography(
-                        text = "Advice",
-                        variant = MTypographyVariant.h6
-                    ) {
+                    styledDiv {
                         css {
-                            marginTop = LinearDimension("32px")
+                            width = LinearDimension(SIDE_DIV_WIDTH)
                         }
-                    }
 
-                    mTypography(
-                        text = advice.content,
-                        variant = MTypographyVariant.body1
-                    ) {
-                        css {
-                            marginTop = LinearDimension("8px")
+                        mTypography(
+                            text = "Advice",
+                            variant = MTypographyVariant.h6
+                        ) {
+                            css {
+                                marginTop = LinearDimension("32px")
+                            }
+                        }
+
+                        mTypography(
+                            text = advice.content,
+                            variant = MTypographyVariant.body1
+                        ) {
+                            css {
+                                marginTop = LinearDimension("8px")
+                            }
                         }
                     }
                 }
 
                 state.quote?.let { quote ->
-                    mTypography(
-                        text = "Quote",
-                        variant = MTypographyVariant.h6
-                    ) {
+                    styledDiv {
                         css {
-                            marginTop = LinearDimension("32px")
+                            width = LinearDimension(SIDE_DIV_WIDTH)
                         }
-                    }
 
-                    mTypography(
-                        text = quote.content,
-                        variant = MTypographyVariant.body1
-                    ) {
-                        css {
-                            marginTop = LinearDimension("8px")
+                        mTypography(
+                            text = "Quote",
+                            variant = MTypographyVariant.h6
+                        ) {
+                            css {
+                                marginTop = LinearDimension("32px")
+                            }
                         }
-                    }
 
-                    mTypography(
-                        text = quote.author,
-                        variant = MTypographyVariant.caption
-                    )
+                        mTypography(
+                            text = quote.content,
+                            variant = MTypographyVariant.body1
+                        ) {
+                            css {
+                                marginTop = LinearDimension("8px")
+                            }
+                        }
+
+                        mTypography(
+                            text = quote.author,
+                            variant = MTypographyVariant.caption
+                        )
+                    }
                 }
             }
         }
@@ -243,24 +293,6 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
                 )
             }
         }
-
-//        styledDiv {
-//            css {
-//                +MainStyles.textContainer
-//            }
-//            +"Hello, World!"
-//        }
-//
-//        styledInput {
-//            css {
-//                +MainStyles.textInput
-//            }
-//            attrs {
-//                type = InputType.text
-//                onChangeFunction = { event ->
-//                }
-//            }
-//        }
     }
 
     private fun onSearchButtonClick(event: Event) {
@@ -269,6 +301,27 @@ class MainComponent(props: MainProps) : ReactComponent<MainProps, MainState>(pro
 
             setState {
                 this.lifehacks = lifehacks
+            }
+        }
+    }
+
+    private fun onRateButtonClick(lifehackId: Long) {
+        val result = window.prompt("Add rate") ?: return
+        val rating = result.toIntOrNull()
+        if (null == rating || rating !in 1..5) {
+            window.alert("Invalid rate (not an integer from 1-5 range)")
+            return
+        }
+
+        componentScope.launch {
+            val rated = lifehackRepository.rate(lifehackId, rating)
+            if (!rated) {
+                window.alert("An error has occurred while rating the lifehack")
+            } else {
+                val lifehacks = lifehackRepository.getAll()
+                setState {
+                    this.lifehacks = lifehacks
+                }
             }
         }
     }

@@ -1,17 +1,20 @@
 package component
 
 import base.ReactComponent
+import com.ccfraser.muirwik.components.MTypographyVariant
 import com.ccfraser.muirwik.components.button.mButton
 import com.ccfraser.muirwik.components.form.mFormControl
 import com.ccfraser.muirwik.components.form.mFormLabel
 import com.ccfraser.muirwik.components.input.mOutlinedInput
 import com.ccfraser.muirwik.components.mSelect
+import com.ccfraser.muirwik.components.mTypography
 import com.ccfraser.muirwik.components.menu.mMenuItem
 import com.ccfraser.muirwik.components.targetValue
 import kotlinx.browser.window
 import kotlinx.coroutines.launch
 import kotlinx.css.LinearDimension
 import kotlinx.css.marginTop
+import kotlinx.css.width
 import kotlinx.html.ButtonType
 import kotlinx.html.classes
 import kotlinx.html.id
@@ -22,13 +25,13 @@ import org.w3c.dom.events.Event
 import react.RBuilder
 import react.RProps
 import react.RState
-import react.dom.button
 import react.dom.div
 import react.router.dom.redirect
 import react.setState
 import repository.CategoryRepository
 import repository.LifehackRepository
 import styled.css
+import styled.styledButton
 import styled.styledDiv
 import styled.styledForm
 
@@ -40,6 +43,8 @@ data class AddState(
     var categoryId: Long? = null,
     var lifehackAdded: Boolean = false,
 ) : RState
+
+private const val FORM_WIDTH: String = "400px"
 
 @JsExport
 class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) {
@@ -56,7 +61,6 @@ class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) 
 
             setState {
                 this.categories = categories
-                categoryId = categories.firstOrNull()?.id
             }
         }
     }
@@ -71,83 +75,111 @@ class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) 
             return
         }
 
-        styledForm {
+        styledDiv {
             css {
                 marginTop = LinearDimension("16px")
             }
 
-            attrs {
-                id = "add_form"
-                onSubmitFunction = ::onSubmit
-            }
-
-            div {
-                mFormControl {
-                    mFormLabel("Content")
-                    mOutlinedInput(
-                        multiline = true,
-                        rows = 5,
-                        onChange = { event ->
-                            setState {
-                                console.log("Content: ${event.targetValue}")
-                                content = (event.targetValue as? String) ?: ""
-                            }
-                        }
-                    )
-                }
-            }
-
-            styledDiv {
+            mTypography(
+                text = "Add lifehack",
+                variant = MTypographyVariant.h6
+            ) {
                 css {
                     marginTop = LinearDimension("16px")
                 }
-
-                mFormControl {
-                    mFormLabel("Category")
-                    mSelect(null) {
-                        attrs {
-                            onChange = { event, element ->
-                                setState {
-                                    console.log("Category: ${event.targetValue}")
-                                    categoryId = (event.targetValue as? String)?.toLongOrNull()
-                                }
-                            }
-                        }
-
-                        state.categories.forEach { category ->
-                            mMenuItem {
-                                +category.name
-
-                                attrs {
-                                    value = category.id.toString()
-                                }
-                            }
-                        }
-                    }
-                }
             }
 
-            styledDiv {
+            styledForm {
                 css {
-                    marginTop = LinearDimension("16px")
+                    marginTop = LinearDimension("8px")
                 }
 
-                mFormControl {
-                    button {
-                        +"Add"
-                        attrs {
-                            classes = setOf("MuiButtonBase-root MuiButton-root MuiButton-contained")
-                            type = ButtonType.submit
-                        }
-                    }
+                attrs {
+                    id = "add_form"
+                    onSubmitFunction = ::onSubmit
+                }
 
-                    mButton("") {
+                div {
+                    mFormControl {
                         css {
-                            marginTop = LinearDimension("16px")
+                            width = LinearDimension(FORM_WIDTH)
                         }
 
-                        attrs {
-                            hidden = true
+                        mFormLabel("Content")
+                        mOutlinedInput(
+                            multiline = true,
+                            rows = 5,
+                            onChange = { event ->
+                                setState {
+                                    content = (event.targetValue as? String) ?: ""
+                                }
+                            }
+                        )
+                    }
+                }
+
+                styledDiv {
+                    css {
+                        marginTop = LinearDimension("24px")
+                        width = LinearDimension(FORM_WIDTH)
+                    }
+
+                    mFormControl {
+                        mFormLabel("Category")
+                        mSelect(null) {
+                            css {
+                                width = LinearDimension(FORM_WIDTH)
+                            }
+
+                            attrs {
+                                onChange = { event, element ->
+                                    setState {
+                                        console.log("Category: ${event.targetValue}")
+                                        categoryId = (event.targetValue as? String)?.toLongOrNull()
+                                    }
+                                }
+                            }
+
+                            state.categories.forEach { category ->
+                                mMenuItem {
+                                    +category.name
+
+                                    attrs {
+                                        value = category.id.toString()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                styledDiv {
+                    css {
+                        marginTop = LinearDimension("24px")
+                    }
+
+                    mFormControl {
+                        styledButton {
+                            +"Add"
+
+                            css {
+                                width = LinearDimension(FORM_WIDTH)
+                            }
+
+                            attrs {
+                                classes = setOf("MuiButtonBase-root MuiButton-root MuiButton-contained")
+                                type = ButtonType.submit
+                            }
+                        }
+
+                        mButton("") {
+                            css {
+                                marginTop = LinearDimension("16px")
+                            }
+
+                            attrs {
+                                hidden = true
+                            }
                         }
                     }
                 }
@@ -157,13 +189,28 @@ class AddComponent(props: AddProps) : ReactComponent<AddProps, AddState>(props) 
 
     private fun onSubmit(event: Event) {
         event.preventDefault()
+        val content = state.content.trim()
+        if (content.isBlank()) {
+            window.alert("Content not entered")
+            return
+        }
+
+        val categoryId = state.categoryId ?: run {
+            window.alert("Category not selected")
+            return
+        }
+
         val requestBody = LifehackRequestBody(
-            content = state.content,
-            categoryId = state.categoryId ?: return
+            content = content,
+            categoryId = categoryId
         )
 
         componentScope.launch {
             val added = lifehackRepository.add(requestBody)
+            if (!added) {
+                window.alert("An error occurred while adding the lifehack")
+                return@launch
+            }
 
             setState {
                 lifehackAdded = added

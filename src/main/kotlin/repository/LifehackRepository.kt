@@ -6,7 +6,6 @@ import kotlinx.coroutines.await
 import kotlinx.coroutines.withContext
 import model.Lifehack
 import model.LifehackRequestBody
-import org.w3c.fetch.Headers
 import org.w3c.fetch.RequestInit
 import util.decodeJson
 import util.encodeJson
@@ -40,15 +39,22 @@ class LifehackRepository : Repository("/api/lifehacks") {
 
     suspend fun add(requestBody: LifehackRequestBody): Boolean {
         val json = encodeJson(requestBody)
-        val headers = Headers().apply {
-            append("Content-Type", "application/json")
-        }
 
         return withContext(Dispatchers.Default) {
             window.fetch(url, RequestInit(
                 method = "POST",
                 body = json,
-                headers = headers
+                headers = defaultHeaders
+            )).await().ok
+        }
+    }
+
+    suspend fun rate(lifehackId: Long, rating: Int): Boolean {
+        return withContext(Dispatchers.Default) {
+            window.fetch("$url/$lifehackId/rating", RequestInit(
+                method = "POST",
+                body = rating,
+                headers = defaultHeaders
             )).await().ok
         }
     }

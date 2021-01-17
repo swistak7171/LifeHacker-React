@@ -1,7 +1,6 @@
 
 import com.ccfraser.muirwik.components.MTypographyVariant
 import com.ccfraser.muirwik.components.mTypography
-import com.ccfraser.muirwik.components.variant
 import component.AddComponent
 import component.MainComponent
 import kotlinx.browser.document
@@ -21,9 +20,11 @@ fun main() {
             hashRouter {
                 nav {
                     navLink<RProps>(to = "/") {
-                        mTypography("LifeHacker") {
+                        mTypography(
+                            text = "LifeHacker",
+                            variant = MTypographyVariant.h4
+                        ) {
                             attrs {
-                                variant = MTypographyVariant.h4
                                 onClick = { event ->
                                     val isMainPage = window.location.href.endsWith("#/")
                                     if (isMainPage) {
