@@ -1,6 +1,7 @@
 #!/bin/bash
 
-apt-get install git
+apt-get update
+apt-get install -y git
 git clone https://github.com/swistak7171/LifeHacker-React.git
 cd LifeHacker-React
 chmod +x gradlew
