@@ -68,6 +68,7 @@ kotlin {
     }
 }
 
+/*
 tasks.getByName("build") {
     val url = System.getenv("LIFEHACKER_URL")
     if (url.isNullOrBlank()) {
@@ -103,3 +104,4 @@ tasks.getByName("build") {
         indexFile.writeText(newHtmlContent)
     }
 }
+*/
