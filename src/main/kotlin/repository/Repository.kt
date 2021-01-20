@@ -13,8 +13,15 @@ abstract class Repository(baseEndpoint: String) {
 
     init {
         val urlInput = document.getElementById("lifehacker_url") as? HTMLInputElement
-        val url = urlInput?.value ?: "http://localhost:8080"
-        requireNotNull(url) { "LifeHacker backend URL is not provided" }
+        val value = urlInput?.value
+        requireNotNull(value) { "LifeHacker backend URL is not provided" }
+
+        val hasPrefix = value.startsWith("http://") || value.startsWith("https://")
+        val url = if (hasPrefix) {
+            value
+        } else {
+            "http://$value"
+        }
 
         this.url = "$url$baseEndpoint"
     }
