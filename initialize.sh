@@ -29,3 +29,5 @@ done < $filename
 
 rm $filename
 echo $html_content > $filename
+
+service nginx restart
