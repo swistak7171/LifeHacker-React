@@ -22,6 +22,7 @@ abstract class Repository(baseEndpoint: String) {
         } else {
             "http://$value"
         }
+        console.log("URL: $url")
 
         this.url = "$url$baseEndpoint"
     }
