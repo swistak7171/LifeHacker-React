@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: lifehacker-frontend-deploy
+  name: lifehacker-frontend-deploy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lifehacker-frontend-deploy
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: lifehacker-frontend-deploy
+    spec:
+      containers:
+        - image: image-registry.openshift-image-registry.svc:5000/labproj12/lifehacker-frontend:1.9
+          name: lifehacker-frontend
+          command: ["/bin/sh", "-c"]
+          args: ["./initialize.sh && sleep infinity"]
+          ports:
+            - containerPort: 80
+          resources: {}
+          envFrom:
+            - configMapRef:
+                name: lifehacker-frontend-cmap
+status: {}
